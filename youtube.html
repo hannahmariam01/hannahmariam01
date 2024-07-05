@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff0000, #ff6666);
+            padding: 15px 20px;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        header img {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+        }
+
+        #startCallButton {
+            background-color: #fff;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #title-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #youtube-title {
+            margin-left: 10px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        #weather-button {
+            background-color: #fff;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #weather-button:hover {
+            background-color: #ddd;
+        }
+
+        #weather-popup {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none;
+            color: #000;
+        }
+
+        #close-button {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            bottom: -25px;
+            right: 15px;
+        }
+
+        nav {
+            background-color: #ff3333;
+            padding: 10px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ff9999;
+        }
+
+        main {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .video-container {
+            position: relative;
+            width: calc(33.33% - 20px);
+            margin-bottom: 30px;
+            transition: border-color 0.3s ease-in-out;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-container:hover {
+            border-color: #39ff14;
+        }
+
+        .video {
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .video .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 1px solid #ddd;
+            transition: transform 0.2s ease-in-out;
+            position: relative;
+        }
+
+        .video:hover .video-thumbnail {
+            transform: scale(1.05);
+        }
+
+        .video h3 {
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .video:hover h3 {
+            color: #ff0000;
+        }
+
+        .video p {
+            padding: 0 15px 15px 15px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .sidebar {
+            background: linear-gradient(to bottom, #333, #666);
+            color: #fff;
+            width: 250px;
+            padding: 20px;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+        .user-profile {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-profile img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .user-profile p {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-nav a:hover {
+            color: #ff9999;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            font-size: 14px;
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        footer p a {
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        footer p a:hover {
+            opacity: 1;
+        }
+
+        @media screen and (max-width: 768px) {
+            main {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .video-container {
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button id="startCallButton">Start Call</button>
+        <div id="title-container">
+            <img src="youtube_icon.jpg" alt="YouTube Icon">
+            <h1 id="youtube-title">YouTube</h1>
+        </div>
+        <button id="weather-button">Get Weather</button>
+        <div id="weather-popup">
+            <p id="weather-location"></p>
+            <p id="weather-temperature"></p>
+            <button id="close-button">Close</button>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Trending</a></li>
+            <li><a href="#">Subscriptions</a></li>
+            <li><a href="#">Library</a></li>
+        </ul>
+    </nav>
+    <div style="display: flex;">
+        <main>
+            <div class="video-container" id="video1" onclick="addPoints('video1')">
+                <div class="video">
+                    <div class="video-thumbnail" style="background-image: url('video_thumbnail1.jpg')">
+                        <iframe class="video-iframe" width="100%" height="200" src="https://www.youtube.com/embed/bWqnCD0j5To" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <h3>PUBG: THE BEST GAMING APP</h3>
+                    <p>gamers web</p>
+                </div>
+            </div>
+            <div class="video-container" id="video2" onclick="addPoints('video2')">
+                <div class="video">
+                    <div class="video-thumbnail" style="background-image: url('video_thumbnail2.jpg')">
+                        <iframe class="video-iframe" width="100%" height="200" src="https://www.youtube.com/embed/jwyge5daKUQ" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <h3>EASY CHICKEN CURRY</h3>
+                    <p>Cooking Made Easy</p>
+                </div>
+            </div>
+            <div class="video-container" id="video3" onclick="addPoints('video3')">
+                <div class="video">
+                    <div class="video-thumbnail" style="background-image: url('video_thumbnail3.jpg')">
+                        <iframe class="video-iframe" width="100%" height="200" src="https://www.youtube.com/embed/L9ZJda5hhQY" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <h3>A DAY IN MY LIFE #3</h3>
+                    <p>Hannah's daily vlog</p>
+                </div>
+            </div>
+        </main>
+        <div class="sidebar">
+            <div class="user-profile">
+                <img src="user_avatar.jpg" alt="User Avatar">
+                <p id="username">User Name</p>
+                <p id="points">Points: <span id="pointValue">0</span></p>
+            </div>
+            <div class="sidebar-nav">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">My Channel</a></li>
+                    <li><a href="#">Subscriptions</a></li>
+                    <li><a href="#">History</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 YouTube | Made by <a href="#" target="_blank">Hannah Mariam</a></p>
+    </footer>
+    <script>
+        let points = 0;
+
+        function updatePoints() {
+            document.getElementById('pointValue').textContent = points;
+        }
+
+        function addPoints(videoId) {
+            points += 5;
+            updatePoints();
+            alert("Points added for watching video!");
+        }
+
+        function displayWeatherPopup() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    const apiKey = 'd8fd93e868b7fec8e29995de82c1cfcd';
+                    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+                    fetch(apiUrl)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const location = data.name;
+                            const temperature = data.main.temp;
+
+                            document.getElementById('weather-location').textContent = `Location: ${location}`;
+                            document.getElementById('weather-temperature').textContent = `Temperature: ${temperature}°C`;
+
+                            document.getElementById('weather-popup').style.display = 'block';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching weather data:', error);
+                            alert('Error fetching weather data. Please try again later.');
+                        });
+                }, error => {
+                    console.error('Error getting geolocation:', error);
+                    alert('Error getting geolocation. Please allow location access and try again.');
+                });
+            } else {
+                console.error('Geolocation is not supported.');
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        function closeWeatherPopup() {
+            document.getElementById('weather-popup').style.display = 'none';
+        }
+
+        function checkTimeAndEnableButton() {
+            const now = new Date();
+            const hours = now.getHours();
+
+            if (hours >= 18 || hours < 12) {
+                document.getElementById('startCallButton').disabled = false;
+            } else {
+                document.getElementById('startCallButton').disabled = true;
+            }
+        }
+
+        document.getElementById('weather-button').addEventListener('click', displayWeatherPopup);
+        document.getElementById('close-button').addEventListener('click', closeWeatherPopup);
+
+        checkTimeAndEnableButton();
+
+        setInterval(checkTimeAndEnableButton, 60000);
+
+        document.getElementById('startCallButton').addEventListener('click', function() {
+            const meetLink = 'https://meet.google.com/ztv-imrk-syy';
+            window.open(meetLink, '_blank');
+        });
+
+        function togglePlayback(player) {
+    if (player.paused) {
+        player.play();
+    } else {
+        player.pause();
+    }
+}
+
+function nextVideo() {
+    alert("Moving to next video");
+    let currentVideo = document.querySelector('.video-container iframe.video-iframe');
+    
+    let currentVideoId = currentVideo.closest('.video-container').id;
+    
+    let nextVideoId;
+    
+    switch (currentVideoId) {
+        case 'video1':
+            nextVideoId = 'video2';
+            break;
+        case 'video2':
+            nextVideoId = 'video3';
+            break;
+        case 'video3':
+            nextVideoId = 'video1';
+            break;
+        default:
+            nextVideoId = 'video1'; 
+            break;
+    }
+    
+    let nextVideo = document.getElementById(nextVideoId).querySelector('iframe.video-iframe');
+    
+    if (nextVideo) {
+        currentVideo.contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+        
+        nextVideo.contentWindow.postMessage('{"event":"command","func":"' + 'playVideo' + '","args":""}', '*');
+        
+        document.getElementById(nextVideoId).scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function showWeatherPopup() {
+    displayWeatherPopup();
+}
+
+let videoPlayer = document.getElementsByClassName('video-iframe');
+let videoPlayerArray = Array.from(videoPlayer);
+
+let tapCount = 0;
+let lastTapTime = 0;
+
+videoPlayerArray.forEach(player => {
+    player.addEventListener('load', function() {
+        player.contentDocument.addEventListener('click', function(event) {
+            event.preventDefault();
+            let currentTime = new Date().getTime();
+            let timeSinceLastTap = currentTime - lastTapTime;
+            if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+                tapCount++;
+            } else {
+                tapCount = 1;
+            }
+            lastTapTime = currentTime;
+
+            if (tapCount === 2) {
+                if (event.clientX < player.offsetWidth / 3) {
+                    player.contentWindow.postMessage('{"event":"command","func":"' + 'seekTo' + '","args":[-10,true]}', '*');
+                } else if (event.clientX > player.offsetWidth * 2 / 3) {
+                    player.contentWindow.postMessage('{"event":"command","func":"' + 'seekTo' + '","args":[10,true]}', '*');
+                }
+            } else if (tapCount === 3) {
+                if (event.clientX < player.offsetWidth / 3) {
+                    showCommentSection();
+                } else if (event.clientX > player.offsetWidth * 2 / 3) {
+                    window.close();
+                } else {
+                    nextVideo();
+                }
+                tapCount = 0;
+            } else if (tapCount === 1) {
+                if (event.clientY < player.offsetHeight / 3 && event.clientX > player.offsetWidth * 2 / 3) {
+                    showWeatherPopup();
+                } else if (event.clientY > player.offsetHeight * 2 / 3) {
+                    togglePlayback(player);
+                }
+            }
+        });
+    });
+});
+
+function nextVideo() {
+    alert("Moving to next video");
+    
+    let currentVideo = document.querySelector('.video-container iframe.video-iframe');
+    
+    let currentVideoId = currentVideo.closest('.video-container').id;
+    
+    let nextVideoId;
+    
+    switch (currentVideoId) {
+        case 'video1':
+            nextVideoId = 'video2';
+            break;
+        case 'video2':
+            nextVideoId = 'video3';
+            break;
+        case 'video3':
+            nextVideoId = 'video1';
+            break;
+        default:
+            nextVideoId = 'video1'; 
+            break;
+    }
+    
+    let nextVideo = document.getElementById(nextVideoId).querySelector('iframe.video-iframe');
+    
+    if (nextVideo) {
+
+        currentVideo.contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+        
+        nextVideo.contentWindow.postMessage('{"event":"command","func":"' + 'playVideo' + '","args":""}', '*');
+        
+        document.getElementById(nextVideoId).scrollIntoView({ behavior: 'smooth' });
+     
+    }
+}
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
